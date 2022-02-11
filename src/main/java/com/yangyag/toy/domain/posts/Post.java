@@ -1,23 +1,26 @@
 package com.yangyag.toy.domain.posts;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Posts {
-
+@Getter
+@Table(name = "posts")
+public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String contents;
 
     private String author;
