@@ -108,7 +108,7 @@ public class PostControllerTest {
 
         mockMvc
                 .perform(delete("/posts/1"))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }

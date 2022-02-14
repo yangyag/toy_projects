@@ -9,7 +9,6 @@ import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.domain.posts.Post;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +27,10 @@ public class PostService {
         return postRepository.save(post).getId();
     }
 
-    @Transactional
     public Post getPost(Long id) throws Exception {
         var post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다"));;
+                //.orElseThrow(() -> NotFoundException("해당 게시물이 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다"));
 
         return post;
     }
@@ -48,7 +47,8 @@ public class PostService {
                 .author(postUpdateRequest.getAuthor())
                 .build();
 
-        return id;
+
+        return postRepository.save(post).getId();
     }
 
     @Transactional
