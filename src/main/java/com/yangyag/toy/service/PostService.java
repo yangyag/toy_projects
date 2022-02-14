@@ -1,6 +1,5 @@
 package com.yangyag.toy.service;
 
-import com.yangyag.toy.web.dto.PostSaveRequest;
 import com.yangyag.toy.web.dto.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -16,45 +15,35 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Transactional
-    public Long create(PostSaveRequest postSaveRequest) throws Exception {
-        var post =
-                Post.builder()
-                        .contents(postSaveRequest.getContents())
-                        .author(postSaveRequest.getAuthor())
-                        .title(postSaveRequest.getTitle())
-                        .build();
-
-        return postRepository.save(post).getId();
+    public void create(Post post) throws Exception {
+        postRepository.save(post);
     }
 
-    public Post getPost(Long id) throws Exception {
-        var post = postRepository.findById(id)
-                //.orElseThrow(() -> NotFoundException("해당 게시물이 없습니다"));
+    public Post getPost(Long id) {
+        return postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다"));
-
-        return post;
     }
 
     @Transactional
-    public Long update(PostUpdateRequest postUpdateRequest) throws Exception {
+    public Long update(PostUpdateRequest postUpdateRequest) {
         var id = postUpdateRequest.getId();
-        var post = postRepository.findById(id)
+
+        postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다"));
 
-        post.builder()
+        var after = Post.builder()
+                .id(postUpdateRequest.getId())
                 .title(postUpdateRequest.getTitle())
                 .contents(postUpdateRequest.getContents())
                 .author(postUpdateRequest.getAuthor())
                 .build();
 
-
-        return postRepository.save(post).getId();
+        return postRepository.save(after).getId();
     }
 
     @Transactional
-    public void delete(Long id) throws Exception {
-        var post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다"));
+    public void delete(Long id) {
+        var post = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
         postRepository.delete(post);
     }

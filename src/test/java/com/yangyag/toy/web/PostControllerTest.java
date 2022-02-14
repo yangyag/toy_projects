@@ -3,7 +3,6 @@ package com.yangyag.toy.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
-import com.yangyag.toy.web.dto.PostSaveRequest;
 import com.yangyag.toy.web.dto.PostUpdateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +34,6 @@ public class PostControllerTest {
 
     private Post post;
 
-
     @BeforeEach
     void setUp() throws Exception {
 
@@ -52,7 +50,7 @@ public class PostControllerTest {
     @DisplayName("데이터 등록이 성공해야 한다")
     void should_be_able_to_create_request() throws Exception {
 
-        var postSaveRequest = PostSaveRequest.builder()
+        var post = Post.builder()
                 .title("This is title 2")
                 .contents("This is contents 2")
                 .author("This is author 2")
@@ -63,7 +61,7 @@ public class PostControllerTest {
                         post("/posts")
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(objectMapper.writeValueAsString(postSaveRequest))
+                                .content(objectMapper.writeValueAsString(post))
                 )
                 .andExpect(status().isCreated())
                 .andDo(print());
