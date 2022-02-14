@@ -25,7 +25,7 @@ public class PostService {
     }
 
     @Transactional
-    public Long update(PostUpdateRequest postUpdateRequest) {
+    public void update(PostUpdateRequest postUpdateRequest) {
         var id = postUpdateRequest.getId();
 
         postRepository.findById(id)
@@ -38,7 +38,7 @@ public class PostService {
                 .author(postUpdateRequest.getAuthor())
                 .build();
 
-        return postRepository.save(after).getId();
+        postRepository.save(after);
     }
 
     @Transactional
