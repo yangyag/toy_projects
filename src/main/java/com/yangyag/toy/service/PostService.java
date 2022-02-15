@@ -61,7 +61,7 @@ public class PostService {
     }
 
     @Transactional(readOnly=true)
-    public Page<Post> getList(PageRequest pageRequest) {
-        return postRepository.findAll(pageRequest);
+    public Page<Post> getList(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 }

@@ -10,13 +10,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,18 +42,16 @@ public class PostControllerTest {
     @BeforeEach
     void setUp() throws Exception {
 
-        for(int i = 1; i <= 30; i++) {
-            savePost(i);
-        }
+//        savePost();
     }
 
     @DisplayName("게시물 임시 등록처리")
-    void savePost(int no) throws Exception {
+    void savePost() throws Exception {
 
         post = Post.builder()
-                .title("This is title " + no)
-                .contents("This is contents " + no)
-                .author("This is author " + no)
+                .title("This is title")
+                .contents("This is contents")
+                .author("This is author")
                 .build();
 
         postRepository.save(post);
@@ -125,13 +125,28 @@ public class PostControllerTest {
     @DisplayName("Post 의 목록을 가지고 올 수 있어야 한다")
     void should_be_able_bring_post_list() throws Exception {
 
-        int size = 5;
         int page = 0;
+        int size = 5;
+
+        MultiValueMap<String, String> requestParams = this.requestParams(page, size);
 
         mockMvc
-                .perform(get("/posts?size=" + size + "&page=" + page))
+                .perform(
+                        get("/posts").params(requestParams)
+                )
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.pageable.pageSize").value(size))
+                .andExpect(jsonPath("$.pageable.pageNumber").value(page))
                 .andDo(print());
+    }
+
+    private MultiValueMap<String, String> requestParams(int page, int size) throws Exception {
+        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+
+        requestParams.set("size", String.valueOf(size));
+        requestParams.set("page", String.valueOf(page));
+
+        return requestParams;
     }
 
 }

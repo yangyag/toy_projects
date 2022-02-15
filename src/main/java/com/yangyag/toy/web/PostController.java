@@ -1,16 +1,11 @@
 package com.yangyag.toy.web;
 
-import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.service.PostService;
 import com.yangyag.toy.web.dto.PostSaveRequest;
 import com.yangyag.toy.web.dto.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,13 +53,7 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<Object> getList(Pageable pageable) throws Exception {
-        var size = pageable.getPageSize();
-        var page = pageable.getPageNumber();
-        var sort = Sort.by("id").descending();
-
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        var list = postService.getList(pageRequest);
+        var list = postService.getList(pageable);
 
         return ResponseEntity.ok().body(list);
     }
