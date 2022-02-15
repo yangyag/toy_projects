@@ -3,17 +3,20 @@ package com.yangyag.toy.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
+import com.yangyag.toy.web.dto.PostSaveRequest;
 import com.yangyag.toy.web.dto.PostUpdateRequest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,10 +40,18 @@ public class PostControllerTest {
     @BeforeEach
     void setUp() throws Exception {
 
+        for(int i = 1; i <= 30; i++) {
+            savePost(i);
+        }
+    }
+
+    @DisplayName("게시물 임시 등록처리")
+    void savePost(int no) throws Exception {
+
         post = Post.builder()
-                .title("This is title 1")
-                .contents("This is contents 1")
-                .author("This is author 1")
+                .title("This is title " + no)
+                .contents("This is contents " + no)
+                .author("This is author " + no)
                 .build();
 
         postRepository.save(post);
@@ -50,7 +61,7 @@ public class PostControllerTest {
     @DisplayName("데이터 등록이 성공해야 한다")
     void should_be_able_to_create_request() throws Exception {
 
-        var post = Post.builder()
+        var postSaveRequest = PostSaveRequest.builder()
                 .title("This is title 2")
                 .contents("This is contents 2")
                 .author("This is author 2")
@@ -61,7 +72,7 @@ public class PostControllerTest {
                         post("/posts")
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(objectMapper.writeValueAsString(post))
+                                .content(objectMapper.writeValueAsString(postSaveRequest))
                 )
                 .andExpect(status().isCreated())
                 .andDo(print());
@@ -110,6 +121,17 @@ public class PostControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName("Post 의 목록을 가지고 올 수 있어야 한다")
+    void should_be_able_bring_post_list() throws Exception {
 
+        int size = 5;
+        int page = 0;
+
+        mockMvc
+                .perform(get("/posts?size=" + size + "&page=" + page))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
 
 }

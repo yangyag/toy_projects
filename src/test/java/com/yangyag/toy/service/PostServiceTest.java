@@ -2,15 +2,24 @@ package com.yangyag.toy.service;
 
 import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
+import com.yangyag.toy.web.dto.PostSaveRequest;
 import com.yangyag.toy.web.dto.PostUpdateRequest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -56,15 +65,13 @@ class PostServiceTest {
     void create() throws Exception {
 
         // given
-        var post = mock(Post.class);
-
-        given(postRepository.save(post)).willReturn(post);
+        var postSaveRequest = mock(PostSaveRequest.class);
 
         // when
-        service.create(post);
+        service.create(postSaveRequest);
 
         // then
-        then(postRepository).should(atLeastOnce()).save(post);
+        then(postRepository).should(atLeastOnce()).save(any(Post.class));
     }
 
     @Test
@@ -76,13 +83,12 @@ class PostServiceTest {
         var postUpdateRequest = mock(PostUpdateRequest.class);
 
         given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
-        given(postRepository.save(any())).willReturn(post);
 
         // when
         service.update(postUpdateRequest);
 
         // then
-        then(postRepository).should(atLeastOnce()).save(any());
+        then(postRepository).should(atLeastOnce()).save(any(Post.class));
     }
 
     @Test
@@ -93,5 +99,25 @@ class PostServiceTest {
         given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.update(postUpdateRequest)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+
+    @PersistenceContext
+    private EntityManager em;
+
+    @Test
+    @DisplayName("Post 의 목록을 가지고 올 수 있어야 한다")
+    void getList() throws Exception {
+
+        //given
+        int page = 0;
+        int size = 5;
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        //when
+        var list = service.getList(pageRequest);
+
+        //then
+        then(postRepository).should(atLeastOnce()).findAll(pageRequest);
     }
 }
