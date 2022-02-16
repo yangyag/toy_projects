@@ -1,5 +1,4 @@
-package com.yangyag.toy.web.dto;
-
+package com.yangyag.toy.web.dto.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostRequest {
-    private Long id;
+public class PostSaveRequest {
     private String title;
     private String contents;
     private String author;

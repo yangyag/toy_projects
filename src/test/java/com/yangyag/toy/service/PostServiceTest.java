@@ -2,8 +2,8 @@ package com.yangyag.toy.service;
 
 import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
-import com.yangyag.toy.web.dto.PostSaveRequest;
-import com.yangyag.toy.web.dto.PostUpdateRequest;
+import com.yangyag.toy.web.dto.post.PostSaveRequest;
+import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

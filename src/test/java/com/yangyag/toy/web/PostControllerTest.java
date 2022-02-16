@@ -3,8 +3,8 @@ package com.yangyag.toy.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
-import com.yangyag.toy.web.dto.PostSaveRequest;
-import com.yangyag.toy.web.dto.PostUpdateRequest;
+import com.yangyag.toy.web.dto.post.PostSaveRequest;
+import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +15,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

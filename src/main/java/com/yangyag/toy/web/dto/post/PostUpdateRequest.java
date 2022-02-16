@@ -1,4 +1,4 @@
-package com.yangyag.toy.web.dto;
+package com.yangyag.toy.web.dto.post;
 
 import lombok.*;
 

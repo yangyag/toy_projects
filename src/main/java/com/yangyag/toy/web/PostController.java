@@ -1,16 +1,14 @@
 package com.yangyag.toy.web;
 
 import com.yangyag.toy.service.PostService;
-import com.yangyag.toy.web.dto.PostSaveRequest;
-import com.yangyag.toy.web.dto.PostUpdateRequest;
+import com.yangyag.toy.web.dto.post.PostSaveRequest;
+import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/posts")
