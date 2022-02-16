@@ -2,7 +2,8 @@ package com.yangyag.toy.web.dto.reply;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Lob;
 
 @Getter
 @Setter
@@ -10,15 +11,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ReplySaveRequest {
+public class ReplyRequest {
     @NonNull
     Long postId;
 
     @NonNull
-    String author;
-
-    String contents;
-
-    @NonNull
-    String pw;
+    Long id;
 }

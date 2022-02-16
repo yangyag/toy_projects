@@ -2,10 +2,15 @@ package com.yangyag.toy.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yangyag.toy.domain.posts.Post;
-import com.yangyag.toy.domain.posts.PostRepository;
+import com.yangyag.toy.domain.reply.Reply;
+import com.yangyag.toy.domain.reply.ReplyRepository;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
-import org.junit.jupiter.api.*;
+import com.yangyag.toy.web.dto.reply.ReplySaveRequest;
+import com.yangyag.toy.web.dto.reply.ReplyUpdateRequest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,90 +22,109 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith({SpringExtension.class})
-public class PostControllerTest {
-
+public class ReplyControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ReplyRepository replyRepository;
+
     @Autowired protected ObjectMapper objectMapper;
 
-    @Autowired
-    private PostRepository postRepository;
-
-    private Post post;
+    Reply reply;
 
     @BeforeEach
     void setUp() throws Exception {
-        savePost();
+        saveReply();
     }
 
-    @DisplayName("게시물 임시 등록처리")
-    void savePost() throws Exception {
+    @DisplayName("댓글 등록처리")
+    void saveReply() throws Exception {
 
-        post = Post.builder()
-                .title("This is title")
-                .contents("This is contents")
+        var reply = Reply.builder()
+                .postId(1L)
+                .contents("This is Contents")
                 .author("This is author")
+                .pw("1234")
                 .build();
 
-        postRepository.save(post);
-    }
-
-    @Test
-    @DisplayName("데이터 등록이 성공해야 한다")
-    void should_be_able_to_create_request() throws Exception {
-
-        var postSaveRequest = PostSaveRequest.builder()
-                .title("This is title 2")
-                .contents("This is contents 2")
-                .author("This is author 2")
-                .build();
-
-        mockMvc
-                .perform(
-                        post("/posts")
-                                .accept(MediaType.APPLICATION_JSON_VALUE)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(objectMapper.writeValueAsString(postSaveRequest))
-                )
-                .andExpect(status().isCreated())
-                .andDo(print());
-
+        replyRepository.save(reply);
     }
 
     @Test
     @DisplayName("조회 성공")
     void should_be_ok() throws Exception {
 
+        Long postId = 1L;
+        Long id = 1L;
+
+        MultiValueMap<String, String> params = this.getReplyRequestParams(postId, id);
+
         mockMvc
-                .perform(get("/posts/1"))
+                .perform(
+                        get("/replys").params(params)
+                )
                 .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    private MultiValueMap<String, String> getReplyRequestParams(Long postId, Long id) throws Exception {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
+        params.set("postId", String.valueOf(postId));
+        params.set("id", String.valueOf(id));
+
+        return params;
+    }
+
+    @Test
+    @DisplayName("데이터 등록이 성공해야 한다")
+    void should_be_able_to_create_request() throws Exception {
+
+        var replySaveRequest = ReplySaveRequest.builder()
+                .postId(1L)
+                .contents("This is Contents")
+                .author("This is author")
+                .pw("1234")
+                .build();
+
+        mockMvc
+                .perform(
+                        post("/replys")
+                                .accept(MediaType.APPLICATION_JSON_VALUE)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(objectMapper.writeValueAsString(replySaveRequest))
+                )
+                .andExpect(status().isCreated())
                 .andDo(print());
 
     }
 
+
     @Test
     @DisplayName("데이터 수정이 성공해야 한다")
     void should_be_able_update_request() throws Exception {
-        var postUpdateRequest = PostUpdateRequest.builder()
+        var replyUpdateRequest = ReplyUpdateRequest.builder()
+                .postId(1L)
                 .id(1L)
-                .title("바뀐 타이틀")
                 .contents("바뀐 내용")
                 .author("바뀐 작성자")
                 .build();
 
         mockMvc
                 .perform(
-                        put("/posts")
+                        put("/replys")
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(objectMapper.writeValueAsString(postUpdateRequest))
+                                .content(objectMapper.writeValueAsString(replyUpdateRequest))
                 )
                 .andExpect(status().isNoContent())
                 .andDo(print());
@@ -111,14 +135,14 @@ public class PostControllerTest {
     void should_be_able_delete_request() throws Exception {
 
         mockMvc
-                .perform(delete("/posts/1"))
+                .perform(delete("/replys/1"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
     @Test
-    @DisplayName("Post 의 목록을 가지고 올 수 있어야 한다")
-    void should_be_able_bring_post_list() throws Exception {
+    @DisplayName("Reply 의 목록을 가지고 올 수 있어야 한다")
+    void should_be_able_bring_reply_list() throws Exception {
 
         int page = 0;
         int size = 5;
@@ -127,7 +151,7 @@ public class PostControllerTest {
 
         mockMvc
                 .perform(
-                        get("/posts").params(requestParams)
+                        get("/replys/list/1").params(requestParams)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pageable.pageSize").value(size))
@@ -143,5 +167,4 @@ public class PostControllerTest {
 
         return requestParams;
     }
-
 }

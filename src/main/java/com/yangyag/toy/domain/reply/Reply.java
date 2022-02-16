@@ -1,9 +1,6 @@
 package com.yangyag.toy.domain.reply;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,13 +9,16 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
+@Getter
+@Setter
 public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @NonNull
-    @Column(name = "post_id")
+    @Column(name = "post_id", nullable = false)
     Long postId;
 
     String author;

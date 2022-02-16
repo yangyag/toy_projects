@@ -2,16 +2,18 @@ package com.yangyag.toy.web.dto.reply;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Lob;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class ReplySaveRequest {
+public class ReplyUpdateRequest {
     @NonNull
+    Long id;
+
     Long postId;
 
     @NonNull

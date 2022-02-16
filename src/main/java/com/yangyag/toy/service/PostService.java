@@ -40,14 +40,14 @@ public class PostService {
         postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다"));
 
-        var after = Post.builder()
+        var post = Post.builder()
                 .id(postUpdateRequest.getId())
                 .title(postUpdateRequest.getTitle())
                 .contents(postUpdateRequest.getContents())
                 .author(postUpdateRequest.getAuthor())
                 .build();
 
-        postRepository.save(after);
+        postRepository.save(post);
     }
 
     @Transactional

@@ -46,7 +46,7 @@ public class PostController {
 
         postService.delete(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping
