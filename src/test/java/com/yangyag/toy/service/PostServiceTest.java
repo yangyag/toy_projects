@@ -11,11 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -32,17 +34,17 @@ class PostServiceTest {
     private PostRepository postRepository;
 
     @Test
+    @DisplayName("Delete가 정상적으로 수행되어야 한다.")
     void delete() throws Exception {
         // given
         var post = mock(Post.class);
-        given(postRepository.findById(any())).willReturn(Optional.of(post));
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
 
         // when
         service.delete(anyLong());
 
         // then
         then(postRepository).should(atLeastOnce()).delete(any());
-        verify(postRepository, atLeastOnce()).delete(any());
     }
 
     @Test
@@ -59,12 +61,11 @@ class PostServiceTest {
     @Test
     @DisplayName("Create 동작이 정상적으로 수행 되어야 한다")
     void create() throws Exception {
-
         // given
-        var postSaveRequest = mock(PostSaveRequest.class);
+        var request = mock(PostSaveRequest.class);
 
         // when
-        service.create(postSaveRequest);
+        service.create(request);
 
         // then
         then(postRepository).should(atLeastOnce()).save(any(Post.class));
@@ -73,15 +74,13 @@ class PostServiceTest {
     @Test
     @DisplayName("Update 동작이 정상적으로 수행 되어야 한다")
     void update() throws Exception {
-
-        // given
         var post = mock(Post.class);
-        var postUpdateRequest = mock(PostUpdateRequest.class);
+        var request = mock(PostUpdateRequest.class);
 
         given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
 
         // when
-        service.update(postUpdateRequest);
+        service.update(anyLong(), request);
 
         // then
         then(postRepository).should(atLeastOnce()).save(any(Post.class));
@@ -91,29 +90,23 @@ class PostServiceTest {
     @DisplayName("Update 수행시 ID 가 없을때 IllegalException 이 발생해야 한다")
     void should_be_throws_illegalException_when_update_by_id_is_empty() throws Exception {
         var postUpdateRequest = mock(PostUpdateRequest.class);
+        var id = 1L;
 
         given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> service.update(postUpdateRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> service.update(id, postUpdateRequest)).isInstanceOf(IllegalArgumentException.class);
     }
-
-
-    @PersistenceContext
-    private EntityManager em;
 
     @Test
     @DisplayName("Post 의 목록을 가지고 올 수 있어야 한다")
     void getList() throws Exception {
-
         //given
-        int page = 0;
-        int size = 5;
-        PageRequest pageRequest = PageRequest.of(page, size);
+        var pageable = mock(Pageable.class);
 
         //when
-        var list = service.getList(pageRequest);
+        var list = service.getList(pageable);
 
         //then
-        then(postRepository).should(atLeastOnce()).findAll(pageRequest);
+        then(postRepository).should(atLeastOnce()).findAll(pageable);
     }
 }

@@ -1,9 +1,9 @@
 package com.yangyag.toy.service;
 
 import com.yangyag.toy.domain.posts.Post;
+import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.domain.reply.Reply;
 import com.yangyag.toy.domain.reply.ReplyRepository;
-import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import com.yangyag.toy.web.dto.reply.ReplySaveRequest;
 import com.yangyag.toy.web.dto.reply.ReplyUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -13,9 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,33 +33,37 @@ public class ReplyServiceTest {
     @Mock
     ReplyRepository replyRepository;
 
+    @Mock
+    PostRepository postRepository;
+
     @Test
     @DisplayName("댓글 등록 기능이 정상적으로 작동해야 한다.")
     void should_be_able_create_reply() throws Exception {
-
         // given
-        var replySaveRequest = ReplySaveRequest.builder()
-                .postId(1L)
-                .author("Reply Author")
-                .contents("Reply Contents")
-                .pw("1234")
-                .build();
+        var postId = 1L;
+        var post = mock(Post.class);
+        var request = mock(ReplySaveRequest.class);
+
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
 
         // when
-        replyService.create(replySaveRequest);
+        replyService.create(postId, request);
 
         // then
-        then(replyRepository).should(atLeastOnce()).save(any(Reply.class));
+        then(postRepository).should(atLeastOnce()).save(post);
     }
 
     @Test
-    @DisplayName("필수 값이 없는경우 댓글 등록 기능이 실패해야 한다.")
+    @DisplayName("POST 의 ID값이 없을때 등록에 실패해야 한다.")
     void should_be_fail_create_reply_when_empty_parameter() throws Exception {
         // given
-        var replySaveRequest = mock(ReplySaveRequest.class);
+        var postId = 1L;
+        var request = mock(ReplySaveRequest.class);
 
-        // then
-        assertThatThrownBy(()-> replyService.create(replySaveRequest)) .isInstanceOf(NullPointerException.class);
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(()-> replyService.create(postId, request)) .isInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -68,73 +71,48 @@ public class ReplyServiceTest {
     void should_be_success_update_reply() throws Exception {
 
         // given
-        var reply = Reply.builder()
-//                .postId(1L)
-                .id(1L)
-                .contents("This is contents")
-                .author("This is author")
-                .pw("1234")
-                .build();
-
-        var replyUpdateRequest = ReplyUpdateRequest.builder()
-                .postId(1L)
-                .id(1L)
-                .contents("This is contents")
-                .author("This is author")
-                .pw("1234")
-                .build();
+        var id = 1L;
+        var reply = mock(Reply.class);
+        var request = mock(ReplyUpdateRequest.class);
 
         given(replyRepository.findById(anyLong())).willReturn(Optional.of(reply));
 
         // when
-        replyService.update(replyUpdateRequest);
+        replyService.update(id, request);
 
         // then
-        then(replyRepository).should(atLeastOnce()).save(any(Reply.class));
+        then(replyRepository).should(atLeastOnce()).save(reply);
     }
 
     @Test
-    @DisplayName("필수 값이 없는경우 update 가 실패해야 한다.")
-    void should_be_fail_update_reply_when_empty_parameter() throws Exception {
-
-        // given
-        var reply = mock(Reply.class);
-        var replyUpdateRequest = mock(ReplyUpdateRequest.class);
-
-        given(replyRepository.findById(anyLong())).willReturn(Optional.of(reply));
-
-        // then
-        assertThatThrownBy(() -> replyService.update(replyUpdateRequest)).isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    @DisplayName("Update 수행시 ID 가 없을때 IllegalException 이 발생해야 한다")
+    @DisplayName("REPLY가 검색되지 않았을 때 없을때 수정에 실패해야 한다.")
     void should_be_throws_illegalException_when_update_by_id_is_empty() throws Exception {
-        var replyUpdateRequest = mock(ReplyUpdateRequest.class);
+        // given
+        var id = 1L;
+        var request = mock(ReplyUpdateRequest.class);
 
         given(replyRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> replyService.update(replyUpdateRequest)).isInstanceOf(IllegalArgumentException.class);
+        // when & then
+        assertThatThrownBy(() -> replyService.update(id, request)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("Reply 의 목록을 가지고 올 수 있어야 한다")
     void getList() throws Exception {
 
-        //given
-        int page = 0;
-        int size = 5;
-        Long postId = 1L;
-        PageRequest pageRequest = PageRequest.of(page, size);
+        var postId = 1L;
+        var pageable = mock(Pageable.class);
 
         //when
-        var list = replyService.getList(postId, pageRequest);
+        var list = replyService.getListBy(postId, pageable);
 
         //then
-        then(replyRepository).should(atLeastOnce()).findAllByPostId(postId, pageRequest);
+        then(replyRepository).should(atLeastOnce()).findAllByPostId(postId, pageable);
     }
 
     @Test
+    @DisplayName("Delete 동작이 정상적으로 수행 되어야 한다")
     void delete() throws Exception {
         // given
         var reply = mock(Reply.class);
@@ -148,7 +126,7 @@ public class ReplyServiceTest {
     }
 
     @Test
-    @DisplayName("아이디가 없을 때 IllegalException 을 발생시켜야 한다.")
+    @DisplayName("Delete시 아이디가 없을 때 IllegalException 을 발생시켜야 한다.")
     void shouldBeThrowIllegalException_WhenIdIsEmpty() {
         // given
         var post = mock(Post.class);

@@ -41,8 +41,6 @@ public class ReplyControllerTest {
 
     @Autowired protected ObjectMapper objectMapper;
 
-    Reply reply;
-
     @BeforeEach
     void setUp() throws Exception {
         saveReply();
@@ -51,7 +49,13 @@ public class ReplyControllerTest {
     @DisplayName("댓글 등록처리")
     void saveReply() throws Exception {
 
-        var reply = Reply.builder()
+        var reply_1 = Reply.builder()
+                .contents("Reply Contents")
+                .author("Reply author")
+                .pw("1234")
+                .build();
+
+        var reply_2 = Reply.builder()
                 .contents("Reply Contents")
                 .author("Reply author")
                 .pw("1234")
@@ -64,7 +68,8 @@ public class ReplyControllerTest {
                 .author("Post author")
                 .build();
 
-        post.addReply(reply);
+        post.addReply(reply_1);
+        post.addReply(reply_2);
 
         postRepository.save(post);
     }
@@ -76,29 +81,18 @@ public class ReplyControllerTest {
         Long postId = 1L;
         Long id = 1L;
 
-        MultiValueMap<String, String> params = this.getReplyRequestParams(postId, id);
-
         mockMvc
                 .perform(
-                        get("/replies").params(params)
+                        get("/posts/{postId}/replies/{id}", postId, id)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
-    private MultiValueMap<String, String> getReplyRequestParams(Long postId, Long id) throws Exception {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-
-        params.set("postId", String.valueOf(postId));
-        params.set("id", String.valueOf(id));
-
-        return params;
-    }
-
     @Test
     @DisplayName("데이터 등록이 성공해야 한다")
     void should_be_able_to_create_request() throws Exception {
-
+        var postId = 1L;
         var replySaveRequest = ReplySaveRequest.builder()
                 .contents("This is Contents")
                 .author("This is author")
@@ -107,7 +101,7 @@ public class ReplyControllerTest {
 
         mockMvc
                 .perform(
-                        post("/replies")
+                        post("/posts/{postId}/replies", postId)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(replySaveRequest))
@@ -121,9 +115,9 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("데이터 수정이 성공해야 한다")
     void should_be_able_update_request() throws Exception {
+        var postId = 1L;
+        var id = 1L;
         var replyUpdateRequest = ReplyUpdateRequest.builder()
-                .postId(1L)
-                .id(1L)
                 .contents("바뀐 내용")
                 .author("바뀐 작성자")
                 .pw("1234")
@@ -131,7 +125,7 @@ public class ReplyControllerTest {
 
         mockMvc
                 .perform(
-                        put("/replies")
+                        put("/posts/{postId}/replies/{id}", postId, id)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(replyUpdateRequest))
@@ -143,9 +137,11 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("데이터 삭제가 성공해야 한다")
     void should_be_able_delete_request() throws Exception {
+        var postId = 1L;
+        var id = 1L;
 
         mockMvc
-                .perform(delete("/replies/1"))
+                .perform(delete("/posts/{postId}/replies/{id}", postId, id))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -153,15 +149,15 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("Reply 의 목록을 가지고 올 수 있어야 한다")
     void should_be_able_bring_reply_list() throws Exception {
-
-        int page = 0;
-        int size = 5;
+        var postId = 1L;
+        var page = 0;
+        var size = 5;
 
         MultiValueMap<String, String> requestParams = this.ListRequestParams(page, size);
 
         mockMvc
                 .perform(
-                        get("/replies/list/1").params(requestParams)
+                        get("/posts/{postId}/replies", postId).params(requestParams)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pageable.pageSize").value(size))

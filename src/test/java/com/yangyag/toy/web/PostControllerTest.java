@@ -33,8 +33,6 @@ public class PostControllerTest {
     @Autowired
     private PostRepository postRepository;
 
-    private Post post;
-
     @BeforeEach
     void setUp() throws Exception {
         savePost();
@@ -43,7 +41,7 @@ public class PostControllerTest {
     @DisplayName("게시물 임시 등록처리")
     void savePost() throws Exception {
 
-        post = Post.builder()
+        var post = Post.builder()
                 .title("This is title")
                 .contents("This is contents")
                 .author("This is author")
@@ -89,7 +87,6 @@ public class PostControllerTest {
     @DisplayName("데이터 수정이 성공해야 한다")
     void should_be_able_update_request() throws Exception {
         var postUpdateRequest = PostUpdateRequest.builder()
-                .id(1L)
                 .title("바뀐 타이틀")
                 .contents("바뀐 내용")
                 .author("바뀐 작성자")

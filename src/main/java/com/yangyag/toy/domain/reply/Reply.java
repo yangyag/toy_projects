@@ -5,6 +5,7 @@ import com.yangyag.toy.domain.posts.Post;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "replies")
@@ -29,7 +30,6 @@ public class Reply {
     @Lob
     private String contents;
 
-    @NonNull
-    @Column(nullable = false)
+    @NotNull
     private String pw;
 }

@@ -2,7 +2,7 @@ package com.yangyag.toy.web.dto.reply;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -11,14 +11,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @ToString
 public class ReplySaveRequest {
-    @NonNull
-    Long postId;
-
-    @NonNull
+    @NotNull
     String author;
 
     String contents;
 
-    @NonNull
+    @NotNull
     String pw;
 }

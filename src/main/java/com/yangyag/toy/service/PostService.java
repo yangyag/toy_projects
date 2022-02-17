@@ -34,18 +34,13 @@ public class PostService {
     }
 
     @Transactional
-    public void update(PostUpdateRequest postUpdateRequest) {
-        var id = postUpdateRequest.getId();
-
-        postRepository.findById(id)
+    public void update(Long id, PostUpdateRequest request) {
+        var post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다"));
 
-        var post = Post.builder()
-                .id(postUpdateRequest.getId())
-                .title(postUpdateRequest.getTitle())
-                .contents(postUpdateRequest.getContents())
-                .author(postUpdateRequest.getAuthor())
-                .build();
+        post.setAuthor(request.getAuthor());
+        post.setContents(request.getContents());
+        post.setTitle(request.getTitle());
 
         postRepository.save(post);
     }

@@ -4,6 +4,7 @@ import com.yangyag.toy.domain.reply.Reply;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +18,9 @@ import java.util.List;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; //
 
-    @NonNull
+    @NotNull
     private String title;
 
     @Lob

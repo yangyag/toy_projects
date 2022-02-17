@@ -3,7 +3,6 @@ package com.yangyag.toy.service;
 import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.domain.reply.Reply;
 import com.yangyag.toy.domain.reply.ReplyRepository;
-import com.yangyag.toy.web.dto.reply.ReplyRequest;
 import com.yangyag.toy.web.dto.reply.ReplySaveRequest;
 import com.yangyag.toy.web.dto.reply.ReplyUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +21,19 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
     private final PostRepository postRepository;
 
+    @Transactional(readOnly = true)
+    public Page<Reply> getListBy(Long postId, Pageable pageable) {
+        return replyRepository.findAllByPostId(postId, pageable);
+    }
+
     @Transactional
-    public void create(ReplySaveRequest replySaveRequest) throws Exception {
-        var post = postRepository.findById(replySaveRequest.getPostId()).orElseThrow(RuntimeException::new);
+    public void create(Long postId, ReplySaveRequest replySaveRequest) throws Exception {
+        var post = postRepository.findById(postId).orElseThrow(RuntimeException::new);
 
         var reply = Reply.builder()
                 .author(replySaveRequest.getAuthor())
                 .contents(replySaveRequest.getContents())
                 .pw(replySaveRequest.getPw())
-                .post(post)
                 .build();
 
         post.addReply(reply);
@@ -38,38 +41,22 @@ public class ReplyService {
         postRepository.save(post);
     }
 
-    @Transactional(readOnly=true)
-    public Reply getReply(ReplyRequest replyRequest) {
-
-        var postId = replyRequest.getPostId();
-        var id = replyRequest.getId();
-
-        return replyRepository.findByPostIdAndId(postId, id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다"));
+    @Transactional(readOnly = true)
+    public Reply getReply(Long id) {
+        return replyRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
     }
 
     @Transactional
-    public void update(ReplyUpdateRequest replyUpdateRequest) {
-        var id = replyUpdateRequest.getId();
-        var postId = replyUpdateRequest.getPostId();
-
-        var post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("상위 게시글이 없습니다"));
-
-        replyRepository.findById(id)
+    public void update(Long id, ReplyUpdateRequest request) {
+        var reply = replyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 없습니다"));
 
+        reply.setContents(request.getContents());
+        reply.setAuthor(reply.getAuthor());
+        reply.setPw(reply.getPw());
 
-        var reply = Reply.builder()
-                .id(replyUpdateRequest.getId())
-                .contents(replyUpdateRequest.getContents())
-                .author(replyUpdateRequest.getAuthor())
-                .pw(replyUpdateRequest.getPw())
-                .build();
-
-//        replyRepository.save(reply);
-        post.addReply(reply);
-        postRepository.save(post);
+        replyRepository.save(reply);
     }
 
     @Transactional
@@ -77,12 +64,5 @@ public class ReplyService {
         var reply = replyRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
         replyRepository.delete(reply);
-    }
-
-    @Transactional(readOnly=true)
-    public Page<Reply> getList(Long postId, Pageable pageable) {
-
-        Pageable paging = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").descending());
-        return replyRepository.findAllByPostId(postId, paging);
     }
 }

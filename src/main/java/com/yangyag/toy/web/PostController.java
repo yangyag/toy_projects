@@ -19,31 +19,26 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getPost(@PathVariable Long id) throws Exception {
-
-        var post = postService.getPost(id);
-
-        return ResponseEntity.ok().body(post);
+        return ResponseEntity.ok().body(postService.getPost(id));
     }
 
     @PostMapping
     public ResponseEntity<Object> createPost(@RequestBody PostSaveRequest postSaveRequest) throws Exception {
-
         postService.create(postSaveRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping
-    public ResponseEntity<Object> updatePost(@RequestBody PostUpdateRequest postUpdateRequest) throws Exception {
-
-        postService.update(postUpdateRequest);
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updatePost(@PathVariable Long id,
+                                             @RequestBody PostUpdateRequest postUpdateRequest) throws Exception {
+        postService.update(id, postUpdateRequest);
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletePost(@PathVariable Long id) throws Exception {
-
         postService.delete(id);
 
         return ResponseEntity.ok().build();
@@ -51,8 +46,8 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<Object> getList(Pageable pageable) throws Exception {
-        var list = postService.getList(pageable);
+        var results = postService.getList(pageable);
 
-        return ResponseEntity.ok().body(list);
+        return ResponseEntity.ok().body(results);
     }
 }

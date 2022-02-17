@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Lob;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -11,16 +12,11 @@ import javax.persistence.Lob;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReplyUpdateRequest {
-    @NonNull
-    Long id;
-
-    Long postId;
-
-    @NonNull
+    @NotNull
     String author;
 
     String contents;
 
-    @NonNull
+    @NotNull
     String pw;
 }
