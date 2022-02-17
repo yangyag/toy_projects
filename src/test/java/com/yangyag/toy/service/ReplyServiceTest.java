@@ -69,7 +69,7 @@ public class ReplyServiceTest {
 
         // given
         var reply = Reply.builder()
-                .postId(1L)
+//                .postId(1L)
                 .id(1L)
                 .contents("This is contents")
                 .author("This is author")

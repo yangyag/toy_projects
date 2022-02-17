@@ -1,11 +1,13 @@
 package com.yangyag.toy.domain.reply;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yangyag.toy.domain.posts.Post;
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "replys")
+@Table(name = "replies")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,18 +17,19 @@ import javax.persistence.*;
 public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    @NonNull
-    @Column(name = "post_id", nullable = false)
-    Long postId;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    @JsonIgnore
+    private Post post;
 
-    String author;
+    private String author;
 
     @Lob
-    String contents;
+    private String contents;
 
     @NonNull
     @Column(nullable = false)
-    String pw;
+    private String pw;
 }

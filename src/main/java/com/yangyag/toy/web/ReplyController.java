@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/replys")
+@RequestMapping("/replies")
 @RequiredArgsConstructor
 @Slf4j
 public class ReplyController {
@@ -21,8 +21,6 @@ public class ReplyController {
     @GetMapping
     public ResponseEntity<Object> getReply(ReplyRequest replyRequest) throws Exception {
 
-        log.info("============== here ==============");
-        log.info(replyRequest.toString());
         var reply = replyService.getReply(replyRequest);
 
         return ResponseEntity.ok().body(reply);
@@ -36,7 +34,7 @@ public class ReplyController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<Object> update(@RequestBody ReplyUpdateRequest replyUpdateRequest) throws Exception {
 
         replyService.update(replyUpdateRequest);

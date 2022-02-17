@@ -2,10 +2,9 @@ package com.yangyag.toy.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yangyag.toy.domain.posts.Post;
+import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.domain.reply.Reply;
 import com.yangyag.toy.domain.reply.ReplyRepository;
-import com.yangyag.toy.web.dto.post.PostSaveRequest;
-import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import com.yangyag.toy.web.dto.reply.ReplySaveRequest;
 import com.yangyag.toy.web.dto.reply.ReplyUpdateRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +36,9 @@ public class ReplyControllerTest {
     @Autowired
     private ReplyRepository replyRepository;
 
+    @Autowired
+    private PostRepository postRepository;
+
     @Autowired protected ObjectMapper objectMapper;
 
     Reply reply;
@@ -50,13 +52,21 @@ public class ReplyControllerTest {
     void saveReply() throws Exception {
 
         var reply = Reply.builder()
-                .postId(1L)
-                .contents("This is Contents")
-                .author("This is author")
+                .contents("Reply Contents")
+                .author("Reply author")
                 .pw("1234")
                 .build();
 
-        replyRepository.save(reply);
+        var post = Post.builder()
+                .id(1L)
+                .contents("Post Contents")
+                .title("Post title")
+                .author("Post author")
+                .build();
+
+        post.addReply(reply);
+
+        postRepository.save(post);
     }
 
     @Test
@@ -70,7 +80,7 @@ public class ReplyControllerTest {
 
         mockMvc
                 .perform(
-                        get("/replys").params(params)
+                        get("/replies").params(params)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -90,7 +100,6 @@ public class ReplyControllerTest {
     void should_be_able_to_create_request() throws Exception {
 
         var replySaveRequest = ReplySaveRequest.builder()
-                .postId(1L)
                 .contents("This is Contents")
                 .author("This is author")
                 .pw("1234")
@@ -98,7 +107,7 @@ public class ReplyControllerTest {
 
         mockMvc
                 .perform(
-                        post("/replys")
+                        post("/replies")
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(replySaveRequest))
@@ -117,11 +126,12 @@ public class ReplyControllerTest {
                 .id(1L)
                 .contents("바뀐 내용")
                 .author("바뀐 작성자")
+                .pw("1234")
                 .build();
 
         mockMvc
                 .perform(
-                        put("/replys")
+                        put("/replies")
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(replyUpdateRequest))
@@ -135,7 +145,7 @@ public class ReplyControllerTest {
     void should_be_able_delete_request() throws Exception {
 
         mockMvc
-                .perform(delete("/replys/1"))
+                .perform(delete("/replies/1"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -151,7 +161,7 @@ public class ReplyControllerTest {
 
         mockMvc
                 .perform(
-                        get("/replys/list/1").params(requestParams)
+                        get("/replies/list/1").params(requestParams)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pageable.pageSize").value(size))

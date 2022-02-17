@@ -33,7 +33,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     public ResponseEntity<Object> updatePost(@RequestBody PostUpdateRequest postUpdateRequest) throws Exception {
 
         postService.update(postUpdateRequest);
