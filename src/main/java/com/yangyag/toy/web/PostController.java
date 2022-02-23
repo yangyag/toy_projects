@@ -1,6 +1,7 @@
 package com.yangyag.toy.web;
 
 import com.yangyag.toy.service.PostService;
+import com.yangyag.toy.web.dto.post.PostRequest;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +46,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getList(Pageable pageable) throws Exception {
-        var results = postService.getList(pageable);
+    public ResponseEntity<Object> getList(PostRequest request, Pageable pageable) throws Exception {
+        var results = postService.getList(request, pageable);
 
         return ResponseEntity.ok().body(results);
     }

@@ -2,6 +2,7 @@ package com.yangyag.toy.service;
 
 import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
+import com.yangyag.toy.web.dto.post.PostRequest;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -101,10 +102,11 @@ class PostServiceTest {
     @DisplayName("Post 의 목록을 가지고 올 수 있어야 한다")
     void getList() throws Exception {
         //given
+        var postRequest = mock(PostRequest.class);
         var pageable = mock(Pageable.class);
 
         //when
-        var list = service.getList(pageable);
+        var list = service.getList(postRequest, pageable);
 
         //then
         then(postRepository).should(atLeastOnce()).findAll(pageable);

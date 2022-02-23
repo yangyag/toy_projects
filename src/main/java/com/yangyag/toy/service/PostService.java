@@ -1,5 +1,6 @@
 package com.yangyag.toy.service;
 
+import com.yangyag.toy.web.dto.post.PostRequest;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +11,14 @@ import org.springframework.stereotype.Service;
 import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.domain.posts.Post;
 
+import java.util.List;
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final PostSupport postSupport;
 
     @Transactional
     public void create(PostSaveRequest postSaveRequest) {
@@ -53,7 +58,7 @@ public class PostService {
     }
 
     @Transactional(readOnly=true)
-    public Page<Post> getList(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<PostRequest> getList(PostRequest request, Pageable pageable) {
+        return postSupport.findAllBy(request, pageable);
     }
 }
