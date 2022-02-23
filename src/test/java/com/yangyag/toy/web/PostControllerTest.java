@@ -5,6 +5,7 @@ import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,8 +132,9 @@ public class PostControllerTest {
     void should_be_able_bring_post_list() throws Exception {
         var page = 0;
         var size = 5;
+        String title = "2";
 
-        MultiValueMap<String, String> requestParams = this.ListRequestParams(page, size);
+        MultiValueMap<String, String> requestParams = this.ListRequestParams(page, size, title);
 
         mockMvc
                 .perform(
@@ -144,11 +146,12 @@ public class PostControllerTest {
                 .andDo(print());
     }
 
-    private MultiValueMap<String, String> ListRequestParams(int page, int size) throws Exception {
+    MultiValueMap<String, String> ListRequestParams(int page, int size, String title) throws Exception {
         MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
 
         requestParams.set("size", String.valueOf(size));
         requestParams.set("page", String.valueOf(page));
+        requestParams.set("title", title);
 
         return requestParams;
     }
