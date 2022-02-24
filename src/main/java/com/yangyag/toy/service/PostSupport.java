@@ -38,8 +38,7 @@ public class PostSupport extends AbstractQueryDslFactory {
     }
 
     public Page<PostRequest> findAllBy(PostRequest request, Pageable pageable) {
-        var title = request.getTitle();
-        var query = this.searchQuery(title);
+        var query = this.searchQuery(request);
 
         Objects
                 .requireNonNull(getQuerydsl())
@@ -49,10 +48,11 @@ public class PostSupport extends AbstractQueryDslFactory {
                 );
 
 
-        return new PageImpl<>(query.fetch(), pageable, this.countBy(title));
+        return new PageImpl<>(query.fetch(), pageable, this.countBy(request));
     }
 
-    public long countBy(String title) {
+    public long countBy(PostRequest request) {
+        var title = request.getTitle();
         var count = this.queryFactory()
                 .select(post.id.countDistinct())
                 .from(post);
@@ -64,7 +64,8 @@ public class PostSupport extends AbstractQueryDslFactory {
         return count.fetchFirst();
     }
 
-    public JPAQuery<PostRequest> searchQuery(String title)  {
+    public JPAQuery<PostRequest> searchQuery(PostRequest request)  {
+        var title = request.getTitle();
         var factory = this.queryFactory();
         var query = factory
                 .select(
