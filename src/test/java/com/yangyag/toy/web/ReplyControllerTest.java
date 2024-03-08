@@ -7,6 +7,7 @@ import com.yangyag.toy.domain.reply.Reply;
 import com.yangyag.toy.domain.reply.ReplyRepository;
 import com.yangyag.toy.web.dto.reply.ReplySaveRequest;
 import com.yangyag.toy.web.dto.reply.ReplyUpdateRequest;
+import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

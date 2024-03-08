@@ -84,6 +84,15 @@ public class PostControllerTest {
     }
 
     @Test
+    void shoud_be_return_test() throws Exception {
+        mockMvc
+                .perform(get("/posts/test"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+
+    @Test
     @DisplayName("데이터 수정이 성공해야 한다")
     void should_be_able_update_request() throws Exception {
         var postUpdateRequest = PostUpdateRequest.builder()
