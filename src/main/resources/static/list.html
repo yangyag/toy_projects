@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글 목록 보기</title>
+    <style>
+        .post {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<button id="loadPostsBtn">글 목록</button>
+<div id="postsContainer"></div>
+
+<script>
+    document.getElementById('loadPostsBtn').addEventListener('click', function() {
+        const token = localStorage.getItem('jwtToken');
+
+        fetch('http://localhost:8080/posts', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('서버에서 문제가 발생했습니다.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const postsContainer = document.getElementById('postsContainer');
+            postsContainer.innerHTML = ''; // 기존 내용을 비웁니다.
+
+            data.content.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <p>${post.contents}</p>
+                    <p>저자: ${post.author}</p>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        })
+        .catch(error => console.error('에러:', error));
+    });
+</script>
+</body>
+</html>

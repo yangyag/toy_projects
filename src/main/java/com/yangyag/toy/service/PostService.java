@@ -2,6 +2,7 @@ package com.yangyag.toy.service;
 
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.domain.posts.Post;
 
 @Service
+@Builder
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
