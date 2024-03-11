@@ -3,7 +3,7 @@ package com.yangyag.toy.service.impl;
 import com.yangyag.toy.service.StrategyService;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("strategy2")
 public class ConcreteStrategy2ServiceImplService implements StrategyService {
 
     @Override
