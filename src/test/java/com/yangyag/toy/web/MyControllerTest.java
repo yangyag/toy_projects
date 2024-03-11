@@ -20,12 +20,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ExtendWith(MockitoExtension.class)
 @Testcontainers
 public class MyControllerTest {
-
-    @Mock
-    private PostRepository postRepository;
 
     @Autowired
     private PostService service;
