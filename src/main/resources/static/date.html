@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Date Difference Calculator</title>
+</head>
+<body>
+<h2>Calculate the Difference Between a Base Date and Today</h2>
+<form id="dateForm">
+    <label for="baseDate">Base Date (yyyy-MM-dd):</label>
+    <input type="date" id="baseDate" name="baseDate" value="2022-10-05">
+    <button type="button" onclick="calculateDifference()">Calculate</button>
+</form>
+<p id="result"></p>
+
+<script>
+    function calculateDifference() {
+        const baseDate = document.getElementById("baseDate").value;
+        fetch(`/date-difference?baseDate=${baseDate}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("result").innerText = `Difference from the base date: ${data}`;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+</body>
+</html>
