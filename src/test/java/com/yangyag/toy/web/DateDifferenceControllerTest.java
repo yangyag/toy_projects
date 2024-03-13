@@ -22,10 +22,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DateDifferenceControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    DateDifferenceService dateDifferenceService;
+    private DateDifferenceService dateDifferenceService;
 
     @Test
     @WithMockUser
