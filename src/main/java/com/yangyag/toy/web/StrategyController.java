@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,12 +18,12 @@ public class StrategyController {
 
     @GetMapping("/strategy/{strategyName}")
     public ResponseEntity<String> executeStrategy(@PathVariable String strategyName) {
-        StrategyService strategyService = strategyMap.get(strategyName);
-        if (strategyService != null) {
-            strategyService.executeStrategy(strategyName);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<StrategyService> strategyService = Optional.ofNullable(strategyMap.get(strategyName));
+
+        strategyService.ifPresent(service -> service.executeStrategy(strategyName));
+
+        return strategyService
+                .map(service -> ResponseEntity.ok("Strategy executed successfully"))
+                .orElseGet(() -> ResponseEntity.badRequest().body("Invalid strategy: " + strategyName));
     }
 }
