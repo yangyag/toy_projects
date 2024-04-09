@@ -1,24 +1,31 @@
 package com.yangyag.toy.service;
 
+import com.yangyag.toy.domain.posts.Post;
+import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import com.yangyag.toy.domain.posts.PostRepository;
-import com.yangyag.toy.domain.posts.Post;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 
 @Service
-@Builder
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final Validator validator;
 
     @Transactional
     public void create(PostSaveRequest postSaveRequest) {
+        var violations  = validator.validate(postSaveRequest);
+
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
 
         var post = Post.builder()
                 .title(postSaveRequest.getTitle())

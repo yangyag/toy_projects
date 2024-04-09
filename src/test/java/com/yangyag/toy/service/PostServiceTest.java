@@ -4,6 +4,7 @@ import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +13,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +41,19 @@ class PostServiceTest {
 
     @Mock
     private PostRepository postRepository;
+
+    private Validator validator;
+
+    @BeforeEach
+    void setUp() {
+        // Validator 인스턴스를 생성 및 초기화
+        LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+        localValidatorFactoryBean.afterPropertiesSet();
+        validator = localValidatorFactoryBean;
+
+        // PostService에 Validator 인스턴스 주입
+        service = new PostService(postRepository, validator);
+    }
 
     @Test
     @DisplayName("Delete가 정상적으로 수행되어야 한다.")
@@ -64,10 +81,29 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("Create 동작이 정상적으로 수행 되어야 한다")
-    void create() throws Exception {
+    @DisplayName("Create 동작시 Title 이 없을경우 Constraint Violation Exception 이 발생해야 한다.")
+    void shouldThrowConstraintViolationExceptionWhenTitleIsMissing() {
         // given
-        var request = mock(PostSaveRequest.class);
+        var request = PostSaveRequest.builder()
+                .author("author")
+                .contents("contents")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() -> service.create(request))
+                .isInstanceOf(ConstraintViolationException.class); // 혹은 다른 적절한 예외
+    }
+
+    @Test
+    @DisplayName("Create 가 정상적으로 수행 되어야 한다.")
+    void shouldInvokeSaveAtLeastOnceWhenCreatingPost() {
+        // given
+        var request = PostSaveRequest.builder()
+                .author("author")
+                .contents("contents")
+                .title("title")
+                .build();
+
 
         // when
         service.create(request);
