@@ -49,7 +49,8 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<Object> getList(Pageable pageable) throws Exception {
-        var results = postService.getList(pageable);
+//        var results = postService.getList(pageable);
+        var results = postService.getListWithReplies(pageable);
 
         return ResponseEntity.ok().body(results);
     }
