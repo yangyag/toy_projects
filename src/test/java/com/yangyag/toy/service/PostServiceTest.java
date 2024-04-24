@@ -22,6 +22,8 @@ import javax.validation.Validator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.*;
@@ -276,5 +278,26 @@ class PostServiceTest {
         // 대신 c는 직접적으로 null 검사 없이 사용될 수 있습니다.
         System.out.println(c);
 
+    }
+
+    @Test
+    void executorServiceTest() {
+        // 스레드 풀의 스레드 수를 설정
+        int threadCount = 4;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+
+        // 실행할 작업 정의
+        Runnable task = () -> {
+            String threadName = Thread.currentThread().getName();
+            System.out.println("Hello from " + threadName);
+        };
+
+        // 작업 실행
+        for (int i = 0; i < 8; i++) {
+            executorService.submit(task);
+        }
+
+        // 스레드 풀 종료
+        executorService.shutdown();
     }
 }
