@@ -21,4 +21,9 @@ public class DateDifferenceController {
     public String getYearFromMonths(@RequestParam("baseMonths") int baseMonths) {
         return dateDifferenceService.getYearFromMonths(baseMonths);
     }
+
+    @GetMapping("/calculateKoreanAge")
+    public int getKoreanAge(@RequestParam("baseDate") String baseDate) {
+        return dateDifferenceService.calculateKoreanAge(baseDate);
+    }
 }

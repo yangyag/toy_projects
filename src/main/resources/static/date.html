@@ -2,6 +2,45 @@
 <html>
 <head>
     <title>Date Difference Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 300px; /* 폼 최대 너비를 제한 */
+        }
+
+        input[type="date"],
+        button {
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        /* 화면 크기가 600px 이하일 때 적용될 스타일 */
+        @media (max-width: 600px) {
+            body {
+                margin: 10px;
+            }
+
+            h2 {
+                font-size: 18px; /* 제목의 글꼴 크기를 줄임 */
+            }
+
+            input[type="date"],
+            button {
+                font-size: 16px; /* 입력 요소와 버튼의 글꼴 크기를 적당히 조정 */
+            }
+        }
+    </style>
 </head>
 <body>
 <h2>Calculate the Difference Between a Base Date and Today</h2>
@@ -11,7 +50,8 @@
     <button type="button" onclick="calculateDifference()">Calculate</button>
 </form>
 <p id="result"></p>
-<p id="ageResult"></p> <!-- 추가된 요소: 연도 결과를 표시할 곳 -->
+<p id="ageResult"></p>
+<p id="koreanAge"></p>
 
 <script>
     function calculateDifference() {
@@ -19,14 +59,15 @@
         fetch(`/date-difference?baseDate=${baseDate}`)
             .then(response => response.text())
             .then(data => {
-                document.getElementById("result").innerText = `Difference in months from the base date: ${data} months`;
+                document.getElementById("result").innerText = `현재 개월수: ${data} 개월`;
                 calculateYear(data); // 날짜 차이 계산 후 연도 계산을 시작합니다.
+                getKoreanAge(baseDate); // 전통적인 한국 나이 계산
             })
             .catch(error => console.error('Error:', error));
     }
 
     function calculateYear(months) {
-        fetch(`/calculateYear?baseMonths=${months}`) // 인코딩 추가
+        fetch(`/calculateYear?baseMonths=${months}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -34,11 +75,19 @@
                 return response.text();
             })
             .then(data => {
-                document.getElementById("ageResult").innerText = `Age: ${data} years`;
+                document.getElementById("ageResult").innerText = `만 나이: ${data} 세`;
             })
             .catch(error => console.error('Error:', error));
     }
 
+    function getKoreanAge(baseDate) {
+        fetch(`/calculateKoreanAge?baseDate=${baseDate}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("koreanAge").innerText = `한국 나이: ${data} 세`;
+            })
+            .catch(error => console.error('Error:', error));
+    }
 </script>
 </body>
 </html>
