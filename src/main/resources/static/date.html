@@ -11,6 +11,7 @@
     <button type="button" onclick="calculateDifference()">Calculate</button>
 </form>
 <p id="result"></p>
+<p id="ageResult"></p> <!-- 추가된 요소: 연도 결과를 표시할 곳 -->
 
 <script>
     function calculateDifference() {
@@ -18,10 +19,26 @@
         fetch(`/date-difference?baseDate=${baseDate}`)
             .then(response => response.text())
             .then(data => {
-                document.getElementById("result").innerText = `Difference from the base date: ${data}`;
+                document.getElementById("result").innerText = `Difference in months from the base date: ${data} months`;
+                calculateYear(data); // 날짜 차이 계산 후 연도 계산을 시작합니다.
             })
             .catch(error => console.error('Error:', error));
     }
+
+    function calculateYear(months) {
+        fetch(`/calculateYear?baseMonths=${months}`) // 인코딩 추가
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById("ageResult").innerText = `Age: ${data} years`;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
 </script>
 </body>
 </html>

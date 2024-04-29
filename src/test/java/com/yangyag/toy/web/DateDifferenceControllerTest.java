@@ -9,8 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,7 +29,7 @@ class DateDifferenceControllerTest {
     @WithMockUser
     void shouldReturnMonthWhenRequired() throws Exception {
 
-        given(dateDifferenceService.calculateDifference("2022-10-05")).willReturn("17");
+        given(dateDifferenceService.calculateMonthsDifference("2022-10-05")).willReturn("17");
 
         mockMvc
                 .perform(
@@ -40,6 +38,22 @@ class DateDifferenceControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("17"))
+                .andDo(print());
+    }
+
+
+    @Test
+    @WithMockUser
+    void shouldReturnYearFromMonths() throws Exception{
+        given(dateDifferenceService.getYearFromMonths(251)).willReturn("20.9");
+
+        mockMvc
+                .perform(
+                        get("/calculateYear")
+                                .param("baseMonths", "251")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("20.9"))
                 .andDo(print());
     }
 }
