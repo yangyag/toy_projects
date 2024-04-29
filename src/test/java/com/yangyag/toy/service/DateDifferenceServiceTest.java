@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith({MockitoExtension.class})
 class DateDifferenceServiceTest {
@@ -46,5 +48,18 @@ class DateDifferenceServiceTest {
 
         // then
         assertEquals("0.0", result, "The calculated years should be 0.0");
+    }
+
+    @Test
+    void shouldReturnKoreanAge() {
+        // given
+        String birthDate = "1986-02-05";
+
+        // when
+        int koreanAge = dateDifferenceService.calculateKoreanAge(birthDate);
+
+        // then
+        int expectedAge = LocalDate.now().getYear() - 1986 + 1;
+        assertEquals(expectedAge, koreanAge, "The calculated Korean age should be correct based on the current year.");
     }
 }

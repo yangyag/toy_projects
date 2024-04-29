@@ -26,4 +26,13 @@ public class DateDifferenceService {
         // 소수점 첫째 자리까지 결과를 포맷팅하여 반환
         return String.format("%.1f", result);
     }
+
+    public int calculateKoreanAge(String baseDate) {
+        LocalDate startDate = LocalDate.parse(baseDate, DateTimeFormatter.ISO_DATE);
+        LocalDate currentDate = LocalDate.now();
+        int yearsDifference = Period.between(startDate, currentDate).getYears();
+
+        // 한국 나이 계산: 태어났을 때 이미 1살로 시작하고, 새해가 되면 1살을 더 더함
+        return yearsDifference + 1;
+    }
 }
