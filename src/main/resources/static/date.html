@@ -45,16 +45,23 @@
 <body>
 <h2>Calculate the Difference Between a Base Date and Today</h2>
 <form id="dateForm">
-    <label for="baseDate">Base Date (yyyy-MM-dd):</label>
+    <label for="baseDate">생일 (yyyy-MM-dd):</label>
     <input type="date" id="baseDate" name="baseDate" value="2022-10-05">
-    <button type="button" onclick="calculateDifference()">Calculate</button>
+    <button type="button" onclick="calculateDifference()">계산</button>
+    <p></p>
+    <label for="targetAge">목표 나이 (만 나이):</label>
+    <input type="text" id="targetAge" name="targetAge" size="10" value="80" />
+    <button type="button" onclick="calculateRemainingDate()">남은일수 계산</button>
 </form>
 <p id="result"></p>
 <p id="ageResult"></p>
 <p id="koreanAge"></p>
+<p id="remainingDate"></p>
 
 <script>
     function calculateDifference() {
+        clearAllParagraphs();
+
         const baseDate = document.getElementById("baseDate").value;
         fetch(`/date-difference?baseDate=${baseDate}`)
             .then(response => response.text())
@@ -88,6 +95,31 @@
             })
             .catch(error => console.error('Error:', error));
     }
+
+    function calculateRemainingDate() {
+        clearAllParagraphs();
+
+        var baseDate = document.getElementById("baseDate").value;
+        var targetAge = document.getElementById("targetAge").value;
+
+        fetch(`/remainingDate?baseDate=${baseDate}&targetAge=${targetAge}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("remainingDate").innerText = `남은 일자: ${data}`;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function clearAllParagraphs() {
+        // 페이지 내 모든 <p> 태그를 선택
+        const paragraphs = document.querySelectorAll('p');
+
+        // 각 <p> 태그의 내용을 비움
+        paragraphs.forEach(function(paragraph) {
+            paragraph.innerText = ''; // 또는 paragraph.innerHTML = '';
+        });
+    }
+
 </script>
 </body>
 </html>

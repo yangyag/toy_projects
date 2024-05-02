@@ -62,4 +62,17 @@ class DateDifferenceServiceTest {
         int expectedAge = LocalDate.now().getYear() - 1986 + 1;
         assertEquals(expectedAge, koreanAge, "The calculated Korean age should be correct based on the current year.");
     }
+
+    @Test
+    void shouldReturnRemainingDateFromBirth() {
+        // given
+        String birthDate = "2022-10-05";
+        int targetAge = 20;
+
+        // when
+        String remainingDate = dateDifferenceService.calculateTimeUntilBy(birthDate, targetAge);
+
+        // then
+        assertEquals("18년 5개월 3일", remainingDate);
+    }
 }
