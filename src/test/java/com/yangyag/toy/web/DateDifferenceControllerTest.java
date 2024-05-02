@@ -41,7 +41,6 @@ class DateDifferenceControllerTest {
                 .andDo(print());
     }
 
-
     @Test
     @WithMockUser
     void shouldReturnYearFromMonths() throws Exception{
@@ -54,6 +53,22 @@ class DateDifferenceControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("20.9"))
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnRemainingDateFromAge() throws Exception{
+        given(dateDifferenceService.calculateTimeUntilBy("2022-10-05", 20)).willReturn("18년 5개월 3일");
+
+        mockMvc
+                .perform(
+                        get("/remainingDate")
+                                .param("baseDate", "2022-10-05")
+                                .param("targetAge", "20")
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("18년 5개월 3일"))
                 .andDo(print());
     }
 }

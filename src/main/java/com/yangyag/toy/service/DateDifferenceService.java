@@ -34,4 +34,30 @@ public class DateDifferenceService {
         return currentDate.getYear() - birthDate.getYear() + 1;
     }
 
+    public String calculateTimeUntilBy(String birthDate, int targetAge) {
+        LocalDate birthday = LocalDate.parse(birthDate, DateTimeFormatter.ISO_DATE);
+        LocalDate dateAtTarget = birthday.plusYears(targetAge); // 생일로부터 목표 년 후
+
+        // 오늘 날짜와 계산하고자 하는 나이의 날짜 사이의 기간 계산
+        LocalDate today = LocalDate.now();
+        Period period = Period.between(today, dateAtTarget);
+
+        // 결과 문자열 형성
+        return formatPeriod(period);
+    }
+
+    private String formatPeriod(Period period) {
+        // 년, 월, 일 각각이 0보다 큰 경우에만 문자열에 포함
+        String result = "";
+        if (period.getYears() > 0) {
+            result += period.getYears() + "년 ";
+        }
+        if (period.getMonths() > 0) {
+            result += period.getMonths() + "개월 ";
+        }
+        if (period.getDays() > 0) {
+            result += period.getDays() + "일";
+        }
+        return result.trim(); // 문자열 양쪽의 공백 제거
+    }
 }

@@ -26,4 +26,9 @@ public class DateDifferenceController {
     public int getKoreanAge(@RequestParam("baseDate") String baseDate) {
         return dateDifferenceService.calculateKoreanAge(baseDate);
     }
+
+    @GetMapping("/remainingDate")
+    public String getRemainingDateFrom(@RequestParam("baseDate") String baseDate, @RequestParam("targetAge") int targetAge) {
+        return dateDifferenceService.calculateTimeUntilBy(baseDate, targetAge);
+    }
 }
