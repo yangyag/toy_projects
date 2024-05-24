@@ -4,59 +4,79 @@
     <title>Date Difference Calculator</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            height: 100vh;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
+        .container {
+            background-color: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
             width: 100%;
-            max-width: 300px; /* 폼 최대 너비를 제한 */
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            text-align: left;
         }
 
         input[type="date"],
+        input[type="text"],
         button {
+            width: 100%;
             padding: 10px;
-            margin: 5px 0;
+            margin: 5px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
         }
 
-        /* 화면 크기가 600px 이하일 때 적용될 스타일 */
-        @media (max-width: 600px) {
-            body {
-                margin: 10px;
-            }
+        button {
+            background-color: #6200ea;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
 
-            h2 {
-                font-size: 18px; /* 제목의 글꼴 크기를 줄임 */
-            }
+        button:hover {
+            background-color: #3700b3;
+        }
 
-            input[type="date"],
-            button {
-                font-size: 16px; /* 입력 요소와 버튼의 글꼴 크기를 적당히 조정 */
-            }
+        p {
+            color: #555;
         }
     </style>
 </head>
 <body>
-<h2>Calculate the Difference Between a Base Date and Today</h2>
-<form id="dateForm">
-    <label for="baseDate">생일 (yyyy-MM-dd):</label>
-    <input type="date" id="baseDate" name="baseDate" value="2022-10-05">
-    <button type="button" onclick="calculateDifference()">계산</button>
-    <p></p>
-    <label for="targetAge">목표 나이 (만 나이):</label>
-    <input type="text" id="targetAge" name="targetAge" size="10" value="80" />
-    <button type="button" onclick="calculateRemainingDate()">남은일수 계산</button>
-</form>
-<p id="result"></p>
-<p id="ageResult"></p>
-<p id="koreanAge"></p>
-<p id="remainingDate"></p>
+<div class="container">
+    <h2>나이 계산기 만들어 봄</h2>
+    <form id="dateForm">
+        <label for="baseDate">생일 (yyyy-MM-dd):</label>
+        <input type="date" id="baseDate" name="baseDate" value="2022-10-05">
+        <button type="button" onclick="calculateDifference()">계산</button>
+        <label for="targetAge">목표 나이 (만 나이):</label>
+        <input type="text" id="targetAge" name="targetAge" size="10" value="80" />
+        <button type="button" onclick="calculateRemainingDate()">남은일수 계산</button>
+    </form>
+    <p id="result"></p>
+    <p id="ageResult"></p>
+    <p id="koreanAge"></p>
+    <p id="remainingDate"></p>
+</div>
 
 <script>
     function calculateDifference() {
