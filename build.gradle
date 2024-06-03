@@ -41,6 +41,9 @@ dependencies {
     annotationProcessor('org.projectlombok:lombok')
     implementation('org.springframework.boot:spring-boot-starter-validation')
 
+    // Jackson 라이브러리 추가
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
     /* Test Only */
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation 'org.testcontainers:testcontainers:1.19.6'
