@@ -1,12 +1,12 @@
 package com.yangyag.toy.web;
 
+import com.yangyag.toy.service.GenerativeAI;
 import com.yangyag.toy.service.NewsPublisher;
+import com.yangyag.toy.web.dto.gpt.ChatGPTRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
