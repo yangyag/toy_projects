@@ -2,6 +2,7 @@ package com.yangyag.toy.service;
 
 import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
+import com.yangyag.toy.web.dto.post.PostDTO;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import com.yangyag.toy.web.dto.post.PostUpdateRequest;
 import lombok.RequiredArgsConstructor;
@@ -68,8 +69,22 @@ public class PostService {
         return postRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Page<PostDTO> getListWithReplies(Pageable pageable) {
+        Page<Post> posts = postRepository.findAllWithReplies(pageable);
+        return posts.map(post -> PostDTO.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .contents(post.getContents())
+                .author(post.getAuthor())
+                .createdAt(post.getFormattedCreatedAt())
+                .build());
+    }
+
+    /*
     @Transactional(readOnly=true)
     public Page<Post> getListWithReplies(Pageable pageable) {
         return postRepository.findAllWithReplies(pageable);
     }
+    */
 }

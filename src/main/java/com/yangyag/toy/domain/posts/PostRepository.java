@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query(value = "SELECT p FROM Post p LEFT JOIN FETCH p.replies",
+    @Query(value = "SELECT p FROM Post p LEFT JOIN FETCH p.replies Order By p.id Desc",
             countQuery = "SELECT COUNT(p) FROM Post p")
     Page<Post> findAllWithReplies(Pageable pageable);
 }

@@ -137,7 +137,13 @@
         const pageSize = 10;
 
         document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("write").addEventListener("click", function() {
+                location.href='board_write.html';
+            });
+
+
             document.getElementById("search").addEventListener("click", function() {
+                alert('곧 구현할거다 ㅋ');
                 currentPage = 0; // 검색할 때 페이지를 초기화
                 fetchData();
             });
@@ -157,7 +163,7 @@
             fetchData();
 
             function fetchData() {
-                fetch(`http://localhost:8080/posts?page=${currentPage}&size=${pageSize}`)
+                fetch(`/posts?page=${currentPage}&size=${pageSize}`)
                     .then(response => response.json())
                     .then(data => {
                         updateTable(data.content);
@@ -196,7 +202,7 @@
                         row.appendChild(authorCell);
 
                         const dateCell = document.createElement("td");
-                        dateCell.textContent = ""; // 작성일을 나중에 채울 예정
+                        dateCell.textContent = post.createdAt
                         row.appendChild(dateCell);
 
                         tbody.appendChild(row);
@@ -248,7 +254,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>게시판</h1>
+    <h1>GPT와 함께하는 게시판</h1>
     <div class="search-container">
         <input type="text" placeholder="검색어를 입력하세요">
         <button id="search">검색</button>
@@ -278,7 +284,7 @@
         <button id="next" disabled>다음</button>
     </div>
     <div class="write-button">
-        <button>글쓰기</button>
+        <button id="write">글쓰기</button>
     </div>
 </div>
 </body>

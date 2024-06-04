@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostService postService;
 
-    private final HelloService test2Service;
-
     @GetMapping("/{id}")
     public ResponseEntity<Object> getPost(@PathVariable Long id) throws Exception {
         return ResponseEntity.ok().body(postService.getPost(id));
@@ -53,11 +51,5 @@ public class PostController {
         var results = postService.getListWithReplies(pageable);
 
         return ResponseEntity.ok().body(results);
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<Object> getHello() throws Exception {
-        var rst = test2Service.sayHello();
-        return ResponseEntity.ok().body(rst);
     }
 }
