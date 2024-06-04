@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GPT와 함께하는 글쓰기</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>GPT와 함께하는 글쓰기</h1>
+    <form id="postForm">
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="contents">내용</label>
+        <textarea id="contents" name="contents" required></textarea>
+
+        <label for="author">작성자</label>
+        <input type="text" id="author" name="author" required>
+
+        <div>
+            <label>모델 선택:</label>
+            <div>
+                <input type="radio" id="gpt-3.5-turbo" name="model" value="gpt-3.5-turbo" checked>
+                <label for="gpt-3.5-turbo">GPT-3.5-Turbo</label>
+            </div>
+            <div>
+                <input type="radio" id="gpt-4o" name="model" value="gpt-4o">
+                <label for="gpt-4o">GPT-4o</label>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button type="button" id="listButton" class="list-button">목록</button>
+            <button type="submit">작성</button>
+            <button type="button" id="helpButton" class="help-button">도움받기</button>
+        </div>
+    </form>
+    <div class="overlay">
+        <img src="ic_loading_img.gif" class="loading" alt="로딩 중...">
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
