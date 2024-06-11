@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>글 상세 보기</title>
+    <link rel="stylesheet" type="text/css" href="/css/board_view.css">
+</head>
+<body>
+<div class="container">
+    <h1>글 상세 보기</h1>
+    <div id="post">
+        <h2 id="postTitle">제목</h2>
+        <div id="postContents">내용</div>
+        <div class="meta-info">
+            <p><strong>작성자:</strong> <span id="postAuthor">작성자 이름</span></p>
+            <p><strong>작성일:</strong> <span id="postCreatedAt">작성일시</span></p>
+            <p><strong>수정일:</strong> <span id="postUpdatedAt">수정일시</span></p>
+        </div>
+    </div>
+    <div class="button-container">
+        <button type="button" id="listButton" class="list-button">목록</button>
+    </div>
+    <div class="overlay">
+        <img src="/img/ic_loading_img.gif" class="loading" alt="로딩 중...">
+    </div>
+</div>
+<script src="/js/board_view.js"></script>
+</body>
+</html>
