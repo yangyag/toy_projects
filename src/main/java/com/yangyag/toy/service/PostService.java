@@ -78,6 +78,7 @@ public class PostService {
                 .contents(post.getContents())
                 .author(post.getAuthor())
                 .createdAt(post.getFormattedCreatedAt())
+                .updatedAt(post.getFormattedUpdatedAt())
                 .build());
     }
 

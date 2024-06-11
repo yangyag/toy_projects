@@ -1,0 +1,111 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+    position: relative;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+#post {
+    margin-bottom: 20px;
+}
+
+#postTitle {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#postContents {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.meta-info {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.meta-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.meta-info strong {
+    color: #333;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+button {
+    background-color: #6200ea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #3700b3;
+}
+
+.list-button {
+    background-color: #008080;
+}
+
+.list-button:hover {
+    background-color: #005757;
+}
+
+.loading {
+    width: 300px;
+    height: 300px;
+}
+
+.overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay.active {
+    display: flex;
+}
