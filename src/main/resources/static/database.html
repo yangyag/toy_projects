@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Database Backup and Download</title>
+    <script>
+        // 데이터베이스 다운로드 함수
+        async function downloadDatabase() {
+            try {
+                let response = await fetch('/database/backup', {
+                    method: 'GET'
+                });
+                if (response.ok) {
+                    alert('Database download triggered successfully');
+                } else {
+                    alert('Failed to trigger database download');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error triggering database download');
+            }
+        }
+
+        // 데이터베이스 백업 함수
+        async function backupDatabase() {
+            try {
+                let response = await fetch('/database/backup', {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    alert('Database backup triggered successfully');
+                } else {
+                    alert('Failed to trigger database backup');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error triggering database backup');
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Database Backup and Download</h1>
+<button onclick="downloadDatabase()">Download Database</button>
+<button onclick="backupDatabase()">Backup Database</button>
+</body>
+</html>

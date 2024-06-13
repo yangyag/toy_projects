@@ -58,5 +58,12 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     // postgresql
-    runtimeOnly 'org.postgresql:postgresql'
+    //runtimeOnly 'org.postgresql:postgresql'
+
+    // SQLite
+    implementation 'org.xerial:sqlite-jdbc:3.41.2.2'
+    implementation 'com.github.gwenn:sqlite-dialect:0.1.0'
+
+    // AWS S3
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.261'
 }
