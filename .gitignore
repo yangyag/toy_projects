@@ -4,4 +4,4 @@
 /build/
 
 src/main/resources/application-local.properties
-mydatabase.db
+docker-compose.yml
