@@ -3,9 +3,12 @@ package com.yangyag.toy.service;
 import com.yangyag.toy.service.impl.ChatGPTService;
 import com.yangyag.toy.web.dto.post.PostSaveRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +20,12 @@ public class ScheduleService {
     @Value("${spring.scheduling.enabled}")
     private boolean schedulingEnabled;
 
+    private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
+
     @Scheduled(fixedDelayString = "#{T(java.util.concurrent.ThreadLocalRandom).current().nextInt(1 * 60 * 60 * 1000, 2 * 60 * 60 * 1000)}")
     public void autoWrite() {
+
+        logger.info("schedulingEnabled ==> " + schedulingEnabled);
 
         if(schedulingEnabled) {
             var contents = this.getContentsByGpt();
