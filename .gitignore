@@ -4,4 +4,3 @@
 /build/
 
 src/main/resources/application-local.properties
-docker-compose.yml

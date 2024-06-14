@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    image: yangyag2/toy-app-image:v1.0.1
+    ports:
+      - "80:8080"
+    environment:
+      - DB_URL
+      - DB_USERNAME
+      - DB_PASSWORD
+      - GPT_API_KEY
+      - S3_ACCESS_KEY
+      - S3_SECRET_KEY
+    depends_on:
+      - db
+    restart: "always"
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=exampledb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: "always"
+
+volumes:
+  pgdata:
