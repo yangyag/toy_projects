@@ -11,12 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.util.Arrays;
@@ -26,9 +23,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
