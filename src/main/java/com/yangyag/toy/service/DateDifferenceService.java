@@ -2,6 +2,7 @@ package com.yangyag.toy.service;
 
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -9,9 +10,18 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class DateDifferenceService {
 
+    private final LocalDate currentDate;
+
+    public DateDifferenceService() {
+        currentDate = LocalDate.now();
+    }
+
+    public DateDifferenceService(Clock clock) {
+        currentDate = LocalDate.now(clock);
+    }
+
     public String calculateMonthsDifference(String baseDate) {
         LocalDate startDate = LocalDate.parse(baseDate, DateTimeFormatter.ISO_DATE);
-        LocalDate currentDate = LocalDate.now();
         Period period = Period.between(startDate, currentDate);
 
         int totalMonths = period.getYears() * 12 + period.getMonths();
@@ -29,7 +39,6 @@ public class DateDifferenceService {
 
     public int calculateKoreanAge(String baseDate) {
         LocalDate birthDate = LocalDate.parse(baseDate, DateTimeFormatter.ISO_DATE);
-        LocalDate currentDate = LocalDate.now();
 
         return currentDate.getYear() - birthDate.getYear() + 1;
     }
@@ -39,8 +48,7 @@ public class DateDifferenceService {
         LocalDate dateAtTarget = birthday.plusYears(targetAge); // 생일로부터 목표 년 후
 
         // 오늘 날짜와 계산하고자 하는 나이의 날짜 사이의 기간 계산
-        LocalDate today = LocalDate.now();
-        Period period = Period.between(today, dateAtTarget);
+        Period period = Period.between(currentDate, dateAtTarget);
 
         // 결과 문자열 형성
         return formatPeriod(period);

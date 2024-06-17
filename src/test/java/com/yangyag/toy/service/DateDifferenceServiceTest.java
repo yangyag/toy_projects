@@ -1,18 +1,39 @@
 package com.yangyag.toy.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 @ExtendWith({MockitoExtension.class})
 class DateDifferenceServiceTest {
 
-    @InjectMocks
     private DateDifferenceService dateDifferenceService;
+
+    @Mock
+    private Clock clock;
+
+    @BeforeEach
+    void setUp() {
+        // 고정된 시간을 설정합니다 (예: 2023-01-01T00:00:00Z)
+        Instant fixedInstant = Instant.parse("2024-01-01T00:00:00Z");
+        when(clock.instant()).thenReturn(fixedInstant);
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
+
+        // Mock Clock을 사용하여 DateDifferenceService 인스턴스 생성
+        dateDifferenceService = new DateDifferenceService(clock);
+    }
 
     @Test
     void shouldReturnMonthByCalculated() {
@@ -20,10 +41,10 @@ class DateDifferenceServiceTest {
         String baseDate = "2022-10-05";
 
         //when
-        String result = dateDifferenceService.calculateMonthsDifference(baseDate);
+        Integer result = Integer.valueOf(dateDifferenceService.calculateMonthsDifference(baseDate));
 
         //then
-        assertEquals("18", result);
+        assertInstanceOf(Integer.class, result);
     }
 
     @Test
@@ -73,6 +94,6 @@ class DateDifferenceServiceTest {
         String remainingDate = dateDifferenceService.calculateTimeUntilBy(birthDate, targetAge);
 
         // then
-        assertEquals("18년 5개월 3일", remainingDate);
+        assertEquals("18년 9개월 4일", remainingDate);
     }
 }

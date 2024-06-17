@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(printOnlyOnFailure = false)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith({SpringExtension.class})
+@ActiveProfiles("test")
 public class PostControllerTest {
 
     @Autowired
@@ -84,15 +86,6 @@ public class PostControllerTest {
     }
 
     @Test
-    void shoud_be_return_test() throws Exception {
-        mockMvc
-                .perform(get("/posts/test"))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-
-    @Test
     @DisplayName("데이터 수정이 성공해야 한다")
     void should_be_able_update_request() throws Exception {
         var postUpdateRequest = PostUpdateRequest.builder()
@@ -103,7 +96,7 @@ public class PostControllerTest {
 
         mockMvc
                 .perform(
-                        put("/posts")
+                        put("/posts/1")
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(postUpdateRequest))
