@@ -38,7 +38,7 @@ public class ReplyServiceTest {
 
     @Test
     @DisplayName("댓글 등록 기능이 정상적으로 작동해야 한다.")
-    void should_be_able_create_reply() throws Exception {
+    void should_be_able_create_reply() {
         // given
         var postId = 1L;
         var post = mock(Post.class);
@@ -50,12 +50,12 @@ public class ReplyServiceTest {
         replyService.create(postId, request);
 
         // then
-        then(postRepository).should(atLeastOnce()).save(post);
+        then(postRepository).should().save(any(Post.class));
     }
 
     @Test
     @DisplayName("POST 의 ID값이 없을때 등록에 실패해야 한다.")
-    void should_be_fail_create_reply_when_empty_parameter() throws Exception {
+    void should_be_fail_create_reply_when_empty_parameter() {
         // given
         var postId = 1L;
         var request = mock(ReplySaveRequest.class);
@@ -68,8 +68,7 @@ public class ReplyServiceTest {
 
     @Test
     @DisplayName("Update 동작이 정상적으로 수행 되어야 한다")
-    void should_be_success_update_reply() throws Exception {
-
+    void should_be_success_update_reply() {
         // given
         var id = 1L;
         var reply = mock(Reply.class);
@@ -81,12 +80,12 @@ public class ReplyServiceTest {
         replyService.update(id, request);
 
         // then
-        then(replyRepository).should(atLeastOnce()).save(reply);
+        then(replyRepository).should().save(any(Reply.class));
     }
 
     @Test
     @DisplayName("REPLY가 검색되지 않았을 때 없을때 수정에 실패해야 한다.")
-    void should_be_throws_illegalException_when_update_by_id_is_empty() throws Exception {
+    void should_be_throws_illegalException_when_update_by_id_is_empty() {
         // given
         var id = 1L;
         var request = mock(ReplyUpdateRequest.class);
@@ -113,7 +112,7 @@ public class ReplyServiceTest {
 
     @Test
     @DisplayName("Delete 동작이 정상적으로 수행 되어야 한다")
-    void delete() throws Exception {
+    void delete() {
         // given
         var reply = mock(Reply.class);
         given(replyRepository.findById(any())).willReturn(Optional.of(reply));

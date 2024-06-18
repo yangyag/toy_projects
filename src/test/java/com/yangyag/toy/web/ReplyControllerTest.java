@@ -7,7 +7,6 @@ import com.yangyag.toy.domain.reply.Reply;
 import com.yangyag.toy.domain.reply.ReplyRepository;
 import com.yangyag.toy.web.dto.reply.ReplySaveRequest;
 import com.yangyag.toy.web.dto.reply.ReplyUpdateRequest;
-import lombok.Builder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,13 +42,24 @@ public class ReplyControllerTest {
 
     @Autowired protected ObjectMapper objectMapper;
 
+    private Long savedPostId;
+    private Long savedReplyId;
+
     @BeforeEach
-    void setUp() throws Exception {
-        saveReply();
+    void setUp() {
+        initializeData();
     }
 
-    @DisplayName("댓글 등록처리")
-    void saveReply() throws Exception {
+    @DisplayName("작업 전 데이터 초기화")
+    void initializeData() {
+        replyRepository.deleteAll();
+        postRepository.deleteAll();
+
+        var post = Post.builder()
+                .contents("Post Contents")
+                .title("Post title")
+                .author("Post author")
+                .build();
 
         var reply_1 = Reply.builder()
                 .contents("Reply Contents")
@@ -64,29 +73,21 @@ public class ReplyControllerTest {
                 .pw("1234")
                 .build();
 
-        var post = Post.builder()
-                .id(1L)
-                .contents("Post Contents")
-                .title("Post title")
-                .author("Post author")
-                .build();
-
         post.addReply(reply_1);
         post.addReply(reply_2);
 
         postRepository.save(post);
+
+        savedPostId = post.getId();
+        savedReplyId = post.getReplies().get(0).getId();
     }
 
     @Test
     @DisplayName("조회 성공")
     void should_be_ok() throws Exception {
-
-        Long postId = 1L;
-        Long id = 1L;
-
         mockMvc
                 .perform(
-                        get("/posts/{postId}/replies/{id}", postId, id)
+                        get("/posts/{postId}/replies/{id}", savedPostId, savedReplyId)
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -95,7 +96,6 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("데이터 등록이 성공해야 한다")
     void should_be_able_to_create_request() throws Exception {
-        var postId = 1L;
         var replySaveRequest = ReplySaveRequest.builder()
                 .contents("This is Contents")
                 .author("This is author")
@@ -104,7 +104,7 @@ public class ReplyControllerTest {
 
         mockMvc
                 .perform(
-                        post("/posts/{postId}/replies", postId)
+                        post("/posts/{postId}/replies", savedPostId)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(replySaveRequest))
@@ -118,8 +118,6 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("데이터 수정이 성공해야 한다")
     void should_be_able_update_request() throws Exception {
-        var postId = 1L;
-        var id = 1L;
         var replyUpdateRequest = ReplyUpdateRequest.builder()
                 .contents("바뀐 내용")
                 .author("바뀐 작성자")
@@ -128,7 +126,7 @@ public class ReplyControllerTest {
 
         mockMvc
                 .perform(
-                        put("/posts/{postId}/replies/{id}", postId, id)
+                        put("/posts/{postId}/replies/{id}", savedPostId, savedReplyId)
                                 .accept(MediaType.APPLICATION_JSON_VALUE)
                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                                 .content(objectMapper.writeValueAsString(replyUpdateRequest))
@@ -140,11 +138,8 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("데이터 삭제가 성공해야 한다")
     void should_be_able_delete_request() throws Exception {
-        var postId = 1L;
-        var id = 1L;
-
         mockMvc
-                .perform(delete("/posts/{postId}/replies/{id}", postId, id))
+                .perform(delete("/posts/{postId}/replies/{id}", savedPostId, savedReplyId))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -152,7 +147,6 @@ public class ReplyControllerTest {
     @Test
     @DisplayName("Reply 의 목록을 가지고 올 수 있어야 한다")
     void should_be_able_bring_reply_list() throws Exception {
-        var postId = 1L;
         var page = 0;
         var size = 5;
 
@@ -160,7 +154,7 @@ public class ReplyControllerTest {
 
         mockMvc
                 .perform(
-                        get("/posts/{postId}/replies", postId).params(requestParams)
+                        get("/posts/{postId}/replies", savedPostId).params(requestParams)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pageable.pageSize").value(size))
