@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: yangyag2/toy-app-image:v1.0.1
+    image: yangyag2/toy-app-image:v1.0.2
     ports:
       - "80:8080"
     environment:
@@ -14,7 +14,7 @@ services:
       - S3_SECRET_KEY
     depends_on:
       - db
-    restart: "always"
+    restart: "no"
 
   db:
     image: postgres:13
@@ -26,7 +26,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    restart: "always"
+    restart: "no"
 
 volumes:
   pgdata:
