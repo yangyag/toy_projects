@@ -1,5 +1,11 @@
 # Toy Project
 
+## IntelliJ VM 설정
+### Application > Configuration > Edit
+#### Add VM Option
+-Dspring.profiles.active=test
+
+
 ## - Docker 명령어 예시
 ### 0. 프로그램 빌드
 ./gradlew bootJar
