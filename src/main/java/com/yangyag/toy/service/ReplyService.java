@@ -1,5 +1,6 @@
 package com.yangyag.toy.service;
 
+import com.yangyag.toy.domain.posts.Post;
 import com.yangyag.toy.domain.posts.PostRepository;
 import com.yangyag.toy.domain.reply.Reply;
 import com.yangyag.toy.domain.reply.ReplyRepository;
@@ -27,13 +28,14 @@ public class ReplyService {
     }
 
     @Transactional
-    public void create(Long postId, ReplySaveRequest replySaveRequest) throws Exception {
-        var post = postRepository.findById(postId).orElseThrow(RuntimeException::new);
+    public void create(Long postId, ReplySaveRequest request) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post with id " + postId + " not found"));
 
-        var reply = Reply.builder()
-                .author(replySaveRequest.getAuthor())
-                .contents(replySaveRequest.getContents())
-                .pw(replySaveRequest.getPw())
+        Reply reply = Reply.builder()
+                .contents(request.getContents())
+                .author(request.getAuthor())
+                .pw(request.getPw())
                 .build();
 
         post.addReply(reply);
@@ -44,7 +46,7 @@ public class ReplyService {
     @Transactional(readOnly = true)
     public Reply getReply(Long id) {
         return replyRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException("Reply not found with id: " + id));
     }
 
     @Transactional
