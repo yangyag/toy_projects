@@ -1,8 +1,8 @@
 package com.yangyag.toy.config;
 
 // SecurityConfig.java
+
 import com.yangyag.toy.security.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,6 +24,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        /*
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -33,6 +34,14 @@ public class SecurityConfig {
                 //.antMatchers("/resources/static/**").permitAll() // 정적 리소스에 대한 접근 허용
                 .antMatchers("**").permitAll()
                 .anyRequest().authenticated();
+        */
+        http
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/**").permitAll() // 모든 요청에 대해 접근 허용
+                .anyRequest().permitAll(); // 다른 모든 요청에 대해 접근 허용
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
