@@ -1,6 +1,7 @@
 # Project exclude paths
 .gradle
 .idea
+.k8s
 /build/
 
 src/main/resources/application-local.properties
