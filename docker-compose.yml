@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: yangyag2/toy-app-image:v1.0.2
+    image: yangyag2/toy-app-image:v1.0.3
     ports:
       - "80:8080"
     environment:
